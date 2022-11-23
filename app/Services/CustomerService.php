@@ -18,9 +18,25 @@ class CustomerService
             $sortOrder = $request->descending == 'true' ? 'desc' : 'asc';
 
             $query = (new Customer())->newQuery()->orderBy($sortBy, $sortOrder);
+            
             $query->when($request->name, function ($query) use ($request) {
                 $query->where('name', 'like', "%$request->name%");
             });
+            
+            $query->when($request->email, function ($query) use ($request) {
+                $query->where('email', 'like', "%$request->email%");
+            });
+            
+            $query->when($request->mobile_no, function ($query) use ($request) {
+                $query->where('mobile_no', 'like', "%$request->mobile_no%");
+            });
+            
+             
+            $query->when($request->gender, function ($query) use ($request) {
+                $query->where('gender', $request->gender);
+            });
+            
+            
             $results = $query->paginate($perPage, ['*'], 'page', $page);
 
             return response()->json($results, 200);
